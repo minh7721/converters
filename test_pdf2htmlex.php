@@ -17,15 +17,18 @@ $converter = new \Colombo\Converters\Helpers\Converter();
 $converter->setInput($input);
 
 // force custom converter
-$ocrConverter = new \Colombo\Converters\Drivers\OcrMyPdf();
-$converter->setForceConverter( $ocrConverter );
-$converter->setOutputFormat( 'pdf');
+$pdf2htmlex = new \Colombo\Converters\Drivers\Pdf2HtmlEx();
+$pdf2htmlex->setTmp( __DIR__ . "/tmp/");
+$converter->setForceConverter( $pdf2htmlex );
+$converter->setOutputFormat( 'html');
+$converter->setStartPage( 1);
+$converter->setEndPage( 2);
 
 
 $result = $converter->run();
 
 if($result->isSuccess()){
-	$result->saveAsZip('xxx/pdf.zip','xxx.pdf');
+	$result->saveAsZip('xxx/a.zip');
 	print_r( $result->getMessages());
 }else{
 	print_r($result->getErrors());

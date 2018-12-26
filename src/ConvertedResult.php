@@ -12,12 +12,12 @@ namespace Colombo\Converters;
 use Colombo\Converters\Exceptions\Result\CanNotWriteResultException;
 use Colombo\Converters\Helpers\TemporaryDirectory;
 use Illuminate\Filesystem\Filesystem;
+use PhpZip\ZipFile;
 
 class ConvertedResult {
-	
-	/** @var  TemporaryDirectory */
-	protected $temDir;
-	protected $files = [];
+	protected $files = [
+//		'path_file_1' => 'content_file_1'
+	];
 	protected $isMultiFile = false;
 	protected $content;
 	protected $filesystem;
@@ -40,7 +40,7 @@ class ConvertedResult {
 	
 	public function getContent(){
 		if($this->isMultiFile){
-			return $this->files;
+			return array_keys( $this->files );
 		}else{
 			return $this->content;
 		}
@@ -54,14 +54,27 @@ class ConvertedResult {
 	}
 	
 	public function addContent($content, $path){
+		if(!$this->isSuccess){
+			$this->isSuccess = true;
+		}
+		if(!$this->isMultiFile){
+			$this->isMultiFile = true;
+		}
+		$this->files[$path] = $content;
+	}
 	
+	public function clearContent(){
+		$this->files = [];
+		$this->content = '';
+		$this->isSuccess = false;
+		$this->isMultiFile = false;
 	}
 	
 	public function saveTo($path, $force = false, $mode = 0755){
 		if($this->isMultiFile){
 			// check dir
 			if($this->filesystem->exists( $path )){
-				if($this->filesystem->isDirectory( $path )){
+				if(!$this->filesystem->isDirectory( $path )){
 					throw new CanNotWriteResultException("Path should be a directory, got " . $path);
 				}
 				if(!$this->filesystem->isWritable( $path)){
@@ -74,8 +87,9 @@ class ConvertedResult {
 				}
 			}
 			$path = rtrim( $path, "/");
-			foreach ($this->files as $file){
-				$this->filesystem->copy( $file, $path . "/" . basename( $file));
+			// write to target dir
+			foreach ($this->files as $p => $content){
+				$this->filesystem->put($path . "/" . $p, $content);
 			}
 			return count($this->files);
 		}else{
@@ -182,6 +196,49 @@ class ConvertedResult {
 		}else{
 			$this->errors["__" . count($this->errors)] = $message;
 		}
+	}
+	
+	/**
+	 * @param string $zip_path full path with file name
+	 * @param string $file_name file name for content when result is single file
+	 *
+	 * @return \PhpZip\ZipFileInterface
+	 *
+	 */
+	public function saveAsZip($zip_path, $file_name = ''){
+		$zip = $this->makeZip($file_name);
+		return $zip->saveAsFile( $zip_path );
+	}
+	
+	/**
+	 * @param string $file_name
+	 *
+	 * @return string
+	 */
+	public function readAsZip($file_name = ''){
+		$zip = $this->makeZip($file_name);
+		return $zip->outputAsString();
+	}
+	
+	/**
+	 * @param string $file_name
+	 *
+	 * @return ZipFile
+	 * @throws CanNotWriteResultException
+	 */
+	private function makeZip($file_name = ''){
+		if(!$this->isMultiFile && empty($file_name)){
+			throw new CanNotWriteResultException("You must supply file name when output is single");
+		}
+		$zip = new ZipFile();
+		if($this->isMultiFile){
+			foreach ($this->files as $path => $content){
+				$zip->addFromString( $path, $content);
+			}
+		}else{
+			$zip->addFromString( $file_name, $this->content);
+		}
+		return $zip;
 	}
 	
 }
