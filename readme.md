@@ -35,4 +35,10 @@ if($result->isSuccess()){
 
     php artisan colombo_convert -i ~/Downloads/30325685_1545065160.doc -f pdf --output ./x.pdf 
     
+    
+### Todo
+
+ -[ ] Add ghostscript for optimize pdf file
+ -[ ] Add qpdf
+ -[ ] Add mupdf for capture pdf
 
