@@ -25,7 +25,8 @@ $converter->setOutputFormat( 'pdf');
 $result = $converter->run();
 
 if($result->isSuccess()){
-	$result->saveAsZip('xxx/pdf.zip','xxx.pdf');
+	$result->saveTo( 'tmp/ocr.pdf');
+	$result->saveAsZip('tmp/ocr.zip','ocr.pdf');
 	print_r( $result->getMessages());
 }else{
 	print_r($result->getErrors());

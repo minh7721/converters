@@ -57,6 +57,12 @@ abstract class CanRunCommand {
 	protected function buildOptions(){
 		$options = ' ';
 		foreach($this->process_options as $k => $v){
+			if(is_array( $v ) && count($v) > 0){
+				foreach ($v as $_v){
+					$options .= $k . " " . $_v . " ";
+				}
+				continue;
+			}
 			if($v !== false){
 				$options .= $k . " ";
 			}else{
