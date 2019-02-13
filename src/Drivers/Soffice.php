@@ -19,8 +19,14 @@ class Soffice extends CanRunCommand implements ConverterInterface {
 	protected $bin = 'soffice';
 	protected $process_options = [
 		'--headless' => true,
+		'--norestore' => true,
+		'--nolockcheck' => true,
 		'--convert-to' => '',
 		'--outdir' => '',
+	];
+	
+	protected $writer_aliases = [
+		'html' => 'html:HTML:EmbedImages',
 	];
 	
 	protected $user_installation = '';
@@ -30,7 +36,11 @@ class Soffice extends CanRunCommand implements ConverterInterface {
 	
 	public function __construct( $bin = '', $tmp = '') {
 		parent::__construct( $bin );
-		$this->setTmp($tmp);
+		if($tmp instanceof TemporaryDirectory){
+			$this->tmpFolder = $tmp;
+		}else{
+			$this->setTmp($tmp);
+		}
 	}
 	
 	public function setTmp( $location ) {
@@ -67,7 +77,7 @@ class Soffice extends CanRunCommand implements ConverterInterface {
 		$outdir = $this->tmpFolder->path();
 		$this->user_installation = "-env:UserInstallation=\"file://" . $outdir . DIRECTORY_SEPARATOR . "tmp\"";
 		// set convert-to
-		$this->options('--convert-to', $outputFormat);
+		$this->options('--convert-to', array_get($this->writer_aliases, $outputFormat, $outputFormat) );
 		$this->options('--outdir', $outdir);
 		$out_name = preg_replace( "/\.[^\.]*$/", "", basename( $path ) );
 		$out_file = $outdir . DIRECTORY_SEPARATOR . $out_name . "." . $outputFormat;
