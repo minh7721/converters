@@ -1,6 +1,7 @@
 <?php
 
 namespace Colombo\Converters\Helpers;
+use Colombo\Converters\Exceptions\ConvertException;
 use Exception;
 use InvalidArgumentException;
 
@@ -76,14 +77,24 @@ class TemporaryDirectory {
 		$path = $this->getFullPath().DIRECTORY_SEPARATOR.trim($pathOrFilename, '/');
 		$directoryPath = $this->removeFilenameFromPath($path);
 		if (! file_exists($directoryPath)) {
-			mkdir($directoryPath, 0777, true);
+			$umask = umask(0);
+			@mkdir($directoryPath, 0777, true);
+			umask($umask);
+			if ( ! is_dir($directoryPath)) {
+				throw new ConvertException(sprintf('Impossible to create the root directory "%s".', $directoryPath));
+			}
 		}
 		return $path;
 	}
 	public function empty(): self
 	{
 		$this->deleteDirectory($this->getFullPath());
-		mkdir($this->getFullPath());
+		$umask = umask(0);
+		@mkdir($this->getFullPath());
+		umask($umask);
+		if ( ! is_dir($this->getFullPath())) {
+			throw new ConvertException(sprintf('Impossible to create the root directory "%s".', $this->getFullPath()));
+		}
 		return $this;
 	}
 	public function delete(): bool
