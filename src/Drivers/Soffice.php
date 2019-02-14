@@ -86,15 +86,9 @@ class Soffice extends CanRunCommand implements ConverterInterface {
 		
 		$result = new ConvertedResult();
 		
-		$command = $this->buildCommand($path);echo $command . "\n";
+		$command = $this->buildCommand($path);
 		try{
 			$this->run( $command );
-			
-			$files = glob( $outdir . "/*");
-			
-			print_r( $files );
-			
-			echo $this->process->getOutput() . "\n";
 			
 			if(!file_exists( $out_file )){
 				$result->addErrors( "Can not convert", 500);
