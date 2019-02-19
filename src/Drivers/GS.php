@@ -32,9 +32,9 @@ class GS extends CanRunCommand implements ConverterInterface {
 	 *
 	 * @param string $bin
 	 */
-	public function __construct( $bin = '' ) {
+	public function __construct( $bin = '', $tmp = '') {
 		parent::__construct( $bin );
-		$this->setTmp('');
+		$this->setTmp($tmp);
 		$this->applyProfile( new SimpleProfile() );
 	}
 	
@@ -129,10 +129,10 @@ class GS extends CanRunCommand implements ConverterInterface {
 	}
 	
 	public function startPage( int $page ) {
-		$this->options('-f', $page);
+		$this->options('-dFirstPage=' . $page, true);
 	}
 	
 	public function endPage( int $page ) {
-		$this->options('-l', $page);
+		$this->options('-dLastPage=' . $page, true);
 	}
 }

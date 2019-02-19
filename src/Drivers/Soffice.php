@@ -20,6 +20,7 @@ class Soffice extends CanRunCommand implements ConverterInterface {
 	protected $process_options = [
 		'--headless' => true,
 		'--norestore' => true,
+		'--safe-mode' => true,
 		'--nolockcheck' => true,
 		'--convert-to' => '',
 		'--outdir' => '',
