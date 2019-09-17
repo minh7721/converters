@@ -20,6 +20,7 @@ class SimpleProfile implements ProfileInterface {
 		'-dDetectDuplicateImages=true' => true,
 		'-dCompressFonts=true' => true,
 		'-dDownScaleFactor=true' => true,
+        '-dFastWebView' => true,
 	];
 	
 	public function getOptions() {

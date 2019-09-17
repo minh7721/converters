@@ -31,7 +31,7 @@ class Pdf2HtmlEx extends CanRunCommand implements ConverterInterface{
 		'--split-pages' => '1',
 //		'--svg-embed-bitmap' => '0',
 //		'--process-nontext' => '1',
-		'--process-outline' => 1,// default 1
+		'--process-outline' => 0,// default 1
 //		'--process-nontext' => 0,
 //		'--auto-hint' => 1,
 		'--stretch-narrow-glyph' => 1,
@@ -40,36 +40,17 @@ class Pdf2HtmlEx extends CanRunCommand implements ConverterInterface{
 //		'--fallback' => 1,
 	];
 	
-	/** @var  TemporaryDirectory */
-	protected $tmpFolder;
-	
-	/**
-	 * Pdf2HtmlEx constructor.
-	 *
-	 * @param string $bin
-	 */
-	public function __construct( $bin = '', $tmp = '' ) {
-		parent::__construct( $bin );
-		$this->setTmp('');
-	}
-	
-	public function setTmp( $location ) {
-		if($this->tmpFolder){
-			$this->tmpFolder->empty();
-		}
-		$this->tmpFolder = new TemporaryDirectory( $location );
-		$this->tmpFolder->create();
-		return $this->tmpFolder->path();
-	}
-	
-	
-	/**
-	 * @param $path
-	 * @param $outputFormat
-	 * @param $inputFormat
-	 *
-	 * @return ConvertedResult
-	 */
+	use HasTmp;
+    
+    
+    /**
+     * @param $path
+     * @param $outputFormat
+     * @param string $inputFormat
+     *
+     * @return ConvertedResult
+     * @throws ConvertException
+     */
 	public function convert( $path, $outputFormat, $inputFormat = '' ): ConvertedResult {
 		$result = new ConvertedResult();
 		
@@ -77,7 +58,7 @@ class Pdf2HtmlEx extends CanRunCommand implements ConverterInterface{
 			throw new ConvertException($outputFormat . " was not supported by pdf2htmlex converter");
 		}
 		
-		$output = $this->tmpFolder->path('output/index.html');
+		$output = $this->tmpFolder->tmpPath('/index.html','tmp', '');
 		$output_dir = str_replace( "/index.html", "", $output);
 		$output_file = "index.html";
 		$this->options('--dest-dir', $output_dir);
@@ -88,7 +69,9 @@ class Pdf2HtmlEx extends CanRunCommand implements ConverterInterface{
 			$files = glob( $output_dir . "/*");
 			foreach ($files as $file){
 				$result->addContent( file_get_contents( $file ), basename( $file));
+				@unlink( $file );
 			}
+			@rmdir( $output_dir );
 		}catch (\RuntimeException $ex){
 			$result->addErrors( $ex->getMessage(), $ex->getCode());
 		}

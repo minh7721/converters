@@ -72,8 +72,8 @@ class TemporaryDirectory {
 		}
 		return $this->autoDestroyed;
 	}
-	public function tmpPath($subfix = '',$prefix = 'tmp'){
-        $subfix = $subfix ? "." . $subfix : "";
+	public function tmpPath($subfix = '',$prefix = 'tmp', $ext_dot = '.'){
+        $subfix = $subfix ? $ext_dot . $subfix : "";
 	    $fileName = $prefix . time() . Str::random(4) . $subfix;
 	    return $this->path($fileName);
     }

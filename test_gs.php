@@ -9,8 +9,6 @@ require __DIR__ . "/vendor/autoload.php";
 $input = __DIR__ . "/files/test.pdf";
 
 $tmp = __DIR__ . "/tmp";
-
-$tmp = __DIR__ . "/tmp";
 $tmpFolder = new \Colombo\Converters\Helpers\TemporaryDirectory($tmp);
 //$tmpFolder->autoDestroyed(false);
 //dd($tmpFolder->clean(1));
