@@ -99,6 +99,7 @@ abstract class CanRunCommand {
 	public function timeout($timeout = ''){
 		if(!empty($timeout)){
 			$this->timeout = $timeout;
+			$this->process->setTimeout( $timeout );
 		}
 		return $this->timeout;
 	}

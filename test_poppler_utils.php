@@ -11,11 +11,13 @@ $input = __DIR__ . "/files/cv.pdf";
 $converter = new \Colombo\Converters\Helpers\Converter($input);
 
 // force custom converter
-$converter->setMappingConverter( 'pdf', 'html', new \Colombo\Converters\Drivers\PdfToHtml());
-$converter->setMappingConverter( 'pdf', 'xml', new \Colombo\Converters\Drivers\PdfToXml());
+$pdftohtml = new \Colombo\Converters\Drivers\PdfToHtml();
+
+$converter->setMappingConverter( 'pdf', 'html', $pdftohtml);
+$converter->setMappingConverter( 'pdf', 'xml', \Colombo\Converters\Drivers\PdfToXml::class);
 $converter->setMappingConverter( 'pdf', 'txt', new \Colombo\Converters\Drivers\PdfToText());
 
-$converter->setOutputFormat( 'txt');
+$converter->setOutputFormat( 'html');
 
 $result = $converter->run();
 

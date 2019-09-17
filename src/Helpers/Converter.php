@@ -213,6 +213,7 @@ class Converter {
                         $this->getOutputFormat() => $instance
                     ];
                 }
+                return $this->converterMapping[$this->getInputFormat()][$this->getOutputFormat()];
             }catch (\Exception $ex){
                 throw new ConvertException("Can not make converter " . $converter['class']);
             }
