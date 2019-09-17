@@ -14,13 +14,11 @@ use Colombo\Converters\Process\CanRunCommand;
 
 class PdfToText extends CanRunCommand implements ConverterInterface {
 	
+    protected $bin = 'pdftotext';
+ 
 	protected $process_options = [
 	
 	];
-	
-	public function __construct( $bin = 'pdftotext', $tmp = '' ) {
-		parent::__construct( $bin );
-	}
 	
 	
 	/**

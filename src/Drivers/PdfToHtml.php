@@ -14,16 +14,15 @@ use Colombo\Converters\Exceptions\ConvertException;
 use Colombo\Converters\Process\CanRunCommand;
 
 class PdfToHtml extends CanRunCommand implements ConverterInterface {
+ 
+    protected $bin = 'pdftohtml';
+    
 	protected $process_options = [
 		'-i' => true,
 		'-stdout' => true,
 		'-nodrm' => true,
 		'-fontfullname' => true,
 	];
-	
-	public function __construct( $bin = 'pdftohtml', $tmp = '' ) {
-		parent::__construct( $bin );
-	}
 	
 	
 	/**
