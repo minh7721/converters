@@ -17,8 +17,11 @@ $converter->setMappingConverter( 'pdf', 'html', $pdftohtml);
 $converter->setMappingConverter( 'pdf', 'xml', \Colombo\Converters\Drivers\PdfToXml::class);
 $converter->setMappingConverter( 'pdf', 'txt', new \Colombo\Converters\Drivers\PdfToText());
 
-$converter->setOutputFormat( 'html');
+$out_format = 'html';
+$converter->setOutputFormat( $out_format );
 
 $result = $converter->run();
+
+$result->saveTo( __DIR__ . "/output_poppler." . $out_format);
 
 echo $result->getContent();

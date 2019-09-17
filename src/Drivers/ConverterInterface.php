@@ -12,7 +12,9 @@ namespace Colombo\Converters\Drivers;
 use Colombo\Converters\ConvertedResult;
 
 interface ConverterInterface {
-	
+    
+    public function __construct( $bin = '', $tmp = '');
+    
 	/**
 	 * @param $path
 	 * @param $outputFormat

@@ -19,17 +19,18 @@ $converter = new \Colombo\Converters\Helpers\Converter(null );
 $converter->setInput($input);
 
 // force custom converter
-//$converter->setForceConverter( new \Colombo\Converters\Drivers\GS('', $tmpFolder) );
-$gs = new \Colombo\Converters\Drivers\GS('', $tmpFolder);
+$tika_host = null;
+$tika_port = null;
+$tika = new \Colombo\Converters\Drivers\Tika();
 //$gs->timeout(2);
-$converter->setMappingConverter( 'pdf', 'pdf', $gs);
+$converter->setForceConverter($tika);
 
-$converter->setOutputFormat( 'pdf');
+$converter->setOutputFormat( 'mime_types');
 
 $result = $converter->run();
 
 if($result->isSuccess()){
-    $result->saveTo( __DIR__ . "/output_gs.pdf" );
+    dump( $result->getContent());
 }else{
     dump("Error", $result->getErrors());
 }
