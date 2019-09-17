@@ -3,7 +3,10 @@
 namespace Colombo\Converters\Helpers;
 use Colombo\Converters\Exceptions\ConvertException;
 use Exception;
+use Illuminate\Support\Str;
 use InvalidArgumentException;
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 
 /**
  * Created by PhpStorm.
@@ -69,6 +72,11 @@ class TemporaryDirectory {
 		}
 		return $this->autoDestroyed;
 	}
+	public function tmpPath($subfix = '',$prefix = 'tmp'){
+        $subfix = $subfix ? "." . $subfix : "";
+	    $fileName = $prefix . time() . Str::random(4) . $subfix;
+	    return $this->path($fileName);
+    }
 	public function path(string $pathOrFilename = ''): string
 	{
 		if (empty($pathOrFilename)) {
@@ -164,4 +172,16 @@ class TemporaryDirectory {
 			$this->deleteDirectory($this->getFullPath());
 		}
 	}
+    
+    public function clean( $minutes = 10 ) {
+        $finder = new Finder();
+        $finder->files()->in( $this->location )->date( '< now - ' . $minutes . " minutes" );
+        $count = 0;
+        /** @var SplFileInfo $file */
+        foreach ( $finder as $file ) {
+            $count += @unlink( $file ) ? 1 : 0;
+        }
+        
+        return $count;
+    }
 }

@@ -48,7 +48,7 @@ class Pdf2HtmlEx extends CanRunCommand implements ConverterInterface{
 	 *
 	 * @param string $bin
 	 */
-	public function __construct( $bin = '' ) {
+	public function __construct( $bin = '', $tmp = '' ) {
 		parent::__construct( $bin );
 		$this->setTmp('');
 	}

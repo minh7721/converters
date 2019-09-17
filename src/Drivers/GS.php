@@ -24,27 +24,17 @@ class GS extends CanRunCommand implements ConverterInterface {
 	
 	];
 	
-	/** @var  TemporaryDirectory */
-	protected $tmpFolder;
+	use HasTmp;
 	
 	/**
 	 * Pdf2HtmlEx constructor.
 	 *
 	 * @param string $bin
+	 * @param string $tmp
 	 */
 	public function __construct( $bin = '', $tmp = '') {
-		parent::__construct( $bin );
-		$this->setTmp($tmp);
+		parent::__construct( $bin, $tmp );
 		$this->applyProfile( new SimpleProfile() );
-	}
-	
-	public function setTmp( $location ) {
-		if($this->tmpFolder){
-			$this->tmpFolder->empty();
-		}
-		$this->tmpFolder = new TemporaryDirectory( $location );
-		$this->tmpFolder->create();
-		return $this->tmpFolder->path();
 	}
 	
 	
@@ -63,7 +53,7 @@ class GS extends CanRunCommand implements ConverterInterface {
 			throw new ConvertException($outputFormat . " was not supported by ghostscript converter");
 		}
 		
-		$output_file = $this->tmpFolder->path('output.pdf');
+		$output_file = $this->tmpFolder->tmpPath('pdf');
 		
 		$this->options('-o', $output_file);
 		
@@ -71,6 +61,7 @@ class GS extends CanRunCommand implements ConverterInterface {
 		try{
 			$this->run( $command );
 			$result->setContent( file_get_contents( $output_file ));
+			@unlink( $output_file );
 		}catch (\RuntimeException $ex){
 			$result->addErrors( $ex->getMessage(), $ex->getCode());
 		}

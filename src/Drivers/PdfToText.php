@@ -18,7 +18,7 @@ class PdfToText extends CanRunCommand implements ConverterInterface {
 	
 	];
 	
-	public function __construct( $bin = 'pdftotext' ) {
+	public function __construct( $bin = 'pdftotext', $tmp = '' ) {
 		parent::__construct( $bin );
 	}
 	

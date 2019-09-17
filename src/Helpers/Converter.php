@@ -15,6 +15,7 @@ use Colombo\Converters\Drivers\JodConverter;
 use Colombo\Converters\Drivers\PdfToHtml;
 use Colombo\Converters\Drivers\PdfToText;
 use Colombo\Converters\Exceptions\ConvertException;
+use Illuminate\Support\Arr;
 
 class Converter {
 	
@@ -177,40 +178,61 @@ class Converter {
 	
 	}
 	
-	/**
-	 * $converter_options can be a string(class name) or array
-	 * [
-	 *  'class' => ConverterClassName,
-	 *  'options' => [], // options for converter
-	 * ]
-	 *
-	 * @param array $options
-	 *
-	 * @throws ConvertException
-	 */
-	protected function makeConverter($options = []){
-		$converter_options = array_get($this->converterMapping, $this->getInputFormat() . "." . $this->getOutputFormat());
-		if(!is_array( $converter_options )){
-			$converter_options = [
-				'class' => $converter_options,
-				'options' => $options,
-			];
-		}else{
-			$converter_options['options'] = isset($converter_options['options']) ?
-				array_merge( $converter_options['options'], $options) : $options;
-		}
-		try{
-			if($this->force_converter){
-				$this->force_converter->options($options);
-			}else{
-				$this->converter = new $converter_options['class'];
-				$this->converter->options($converter_options['options']);
-			}
-		}catch (\Exception $ex){
-			throw new ConvertException("Can not make converter " . $converter_options['class']);
-		}
-		
-	}
+	public function getMappingConverter($options = []){
+        if($this->force_converter){
+            if(count( $options )){
+                $this->force_converter->options($options);
+            }
+            return $this->force_converter;
+        }
+        $converter = Arr::get($this->converterMapping, $this->getInputFormat() . "." . $this->getOutputFormat());
+        if(!$converter){
+            throw new \Exception("No converter was assigned to convert from " . $this->getInputFormat() . " to " . $this->getOutputFormat());
+        }elseif($converter instanceof ConverterInterface){
+            if(count( $options )){
+                $converter->options($options);
+            }
+            return $converter;
+        }else{
+            if(!is_array( $converter )){
+                $converter = [
+                    'class' => $converter,
+                    'options' => $options,
+                ];
+            }else{
+                $converter['options'] = isset($converter['options']) ?
+                    array_merge( $converter['options'], $options) : $options;
+            }
+            try{
+                $instance = new $converter['class'];
+                $instance->options($converter['options']);
+                if(isset($this->converterMapping[$this->getInputFormat()])){
+                    $this->converterMapping[$this->getInputFormat()][$this->getOutputFormat()] = $instance;
+                }else{
+                    $this->converterMapping[$this->getInputFormat()] = [
+                        $this->getOutputFormat() => $instance
+                    ];
+                }
+            }catch (\Exception $ex){
+                throw new ConvertException("Can not make converter " . $converter['class']);
+            }
+        }
+    }
+    
+    /**
+     * @param string $input
+     * @param string $output
+     * @param array|ConverterInterface|string $converter
+     */
+    public function setMappingConverter($input, $output, $converter){
+        if(isset($this->converterMapping[$input])){
+            $this->converterMapping[$input][$output] = $converter;
+        }else{
+            $this->converterMapping[$input] = [
+                $output => $converter
+            ];
+        }
+    }
 	
 	/**
 	 * Call convert process
@@ -218,11 +240,11 @@ class Converter {
 	 * @param array $options
 	 *
 	 * @return ConvertedResult
+	 * @throws ConvertException
 	 */
 	public function run($options = []): ConvertedResult{
-		$this->makeConverter($options);
-		
-		$converter = $this->force_converter ?: $this->converter;
+	 
+		$converter = $this->getMappingConverter($options);
 		
 		if($this->startPage){
 			$converter->startPage( $this->startPage);

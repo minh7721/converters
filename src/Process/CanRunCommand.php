@@ -22,11 +22,15 @@ abstract class CanRunCommand {
 	 * CanRunCommand constructor.
 	 *
 	 * @param string $bin
+	 * @param string $tmp
 	 */
-	public function __construct($bin = '') {
+	public function __construct($bin = '', $tmp = '') {
 		$this->bin($bin);
 		$this->process = new Process('');
 		$this->process->setTimeout($this->timeout);
+		if(method_exists( $this, 'setTmp')){
+		    $this->setTmp($tmp);
+        }
 	}
 	
 	
@@ -76,12 +80,12 @@ abstract class CanRunCommand {
 		return $options;
 	}
 	
-	public function run($command)
+	public function run($command, $callback = null)
 	{
 //		$this->command = escapeshellcmd($command);
 		$this->command = $command;
 		$this->process->setCommandLine($this->command);
-		$this->process->run();
+		$this->process->run($callback);
 		$this->validateRun();
 		
 		return $this;
@@ -118,6 +122,7 @@ abstract class CanRunCommand {
 		}
 		return $this->process_options;
 	}
+	
 	public function output()
 	{
 		return $this->process->getOutput();

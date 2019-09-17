@@ -21,7 +21,7 @@ class PdfToHtml extends CanRunCommand implements ConverterInterface {
 		'-fontfullname' => true,
 	];
 	
-	public function __construct( $bin = 'pdftohtml' ) {
+	public function __construct( $bin = 'pdftohtml', $tmp = '' ) {
 		parent::__construct( $bin );
 	}
 	

@@ -35,7 +35,11 @@ class ConvertedResult {
 	 * @param $filesystem
 	 */
 	public function __construct( $filesystem = null ) {
-		$this->filesystem = new Filesystem();
+	    if($filesystem){
+	        $this->filesystem = $filesystem;
+        }else{
+            $this->filesystem = new Filesystem();
+        }
 	}
 	
 	public function getContent(){
@@ -214,6 +218,8 @@ class ConvertedResult {
 	 * @param string $file_name
 	 *
 	 * @return string
+	 * @throws CanNotWriteResultException
+	 * @throws \PhpZip\Exception\ZipException
 	 */
 	public function readAsZip($file_name = ''){
 		$zip = $this->makeZip($file_name);
