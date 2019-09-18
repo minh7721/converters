@@ -25,7 +25,7 @@ $tika = new \Colombo\Converters\Drivers\Tika();
 //$gs->timeout(2);
 $converter->setForceConverter($tika);
 
-$converter->setOutputFormat( 'mime_types');
+$converter->setOutputFormat( 'html');
 
 $result = $converter->run();
 

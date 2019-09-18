@@ -73,7 +73,15 @@ class ConvertedResult {
 		$this->isSuccess = false;
 		$this->isMultiFile = false;
 	}
-	
+    
+    /**
+     * @param $path
+     * @param bool $force
+     * @param int $mode
+     *
+     * @return int file size
+     * @throws CanNotWriteResultException
+     */
 	public function saveTo($path, $force = false, $mode = 0755){
 		if($this->isMultiFile){
 			// check dir
@@ -101,6 +109,7 @@ class ConvertedResult {
 				throw new CanNotWriteResultException("file existed at " . $path);
 			}
 			$this->filesystem->put( $path, $this->content );
+			return filesize( $path );
 		}
 	}
 	
@@ -201,14 +210,15 @@ class ConvertedResult {
 			$this->errors["__" . count($this->errors)] = $message;
 		}
 	}
-	
-	/**
-	 * @param string $zip_path full path with file name
-	 * @param string $file_name file name for content when result is single file
-	 *
-	 * @return \PhpZip\ZipFileInterface
-	 *
-	 */
+    
+    /**
+     * @param string $zip_path full path with file name
+     * @param string $file_name file name for content when result is single file
+     *
+     * @return \PhpZip\ZipFileInterface
+     * @throws CanNotWriteResultException
+     * @throws \PhpZip\Exception\ZipException
+     */
 	public function saveAsZip($zip_path, $file_name = ''){
 		$zip = $this->makeZip($file_name);
 		return $zip->saveAsFile( $zip_path );
@@ -225,13 +235,14 @@ class ConvertedResult {
 		$zip = $this->makeZip($file_name);
 		return $zip->outputAsString();
 	}
-	
-	/**
-	 * @param string $file_name
-	 *
-	 * @return ZipFile
-	 * @throws CanNotWriteResultException
-	 */
+    
+    /**
+     * @param string $file_name
+     *
+     * @return ZipFile
+     * @throws CanNotWriteResultException
+     * @throws \PhpZip\Exception\ZipException
+     */
 	private function makeZip($file_name = ''){
 		if(!$this->isMultiFile && empty($file_name)){
 			throw new CanNotWriteResultException("You must supply file name when output is single");

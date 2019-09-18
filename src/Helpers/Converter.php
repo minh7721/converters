@@ -63,16 +63,11 @@ class Converter {
 	 *
 	 * @throws \Exception
 	 */
-	public function __construct( $path = '' ) {
-		if ( !empty($path) && ! file_exists( $path ) ) {
-			throw new \Exception( "File not found at " . $path );
-		}
-		$this->input = $path;
-		
+	public function __construct( $path = '', $inputFormat = null) {
 		$this->mimeHelper = new Mime();
 		
 		if(!empty($path)){
-			$this->inputFormat = $this->mimeHelper->getExtension( $path );
+			$this->setInput( $path, $inputFormat);
 		}
 	}
 	
@@ -82,13 +77,23 @@ class Converter {
 	public function getInput(): string {
 		return $this->input;
 	}
-	
-	/**
-	 * @param string $input
-	 */
-	public function setInput( string $input ) {
+    
+    /**
+     * @param string $input
+     * @param null $inputFormat
+     *
+     * @throws \Exception
+     */
+	public function setInput( string $input, $inputFormat = null ) {
 		$this->input = $input;
-		$this->inputFormat = $this->mimeHelper->getExtension( $input );
+		if($inputFormat == 'url'){
+		    $this->inputFormat = 'url';
+        }else{
+            $this->inputFormat = $inputFormat ?? $this->mimeHelper->getExtension( $input );
+            if(!file_exists( $this->input )){
+                throw new \Exception( "File not found at " . $this->input );
+            }
+        }
 	}
 	
 	/**
