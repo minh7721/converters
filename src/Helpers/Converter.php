@@ -267,5 +267,19 @@ class Converter {
 		$convertedResult->addMessages( $runtime , self::MSG_TIME);
 		return $convertedResult;
 	}
-	
+    
+    /**
+     * @return Mime
+     */
+    public function getMimeHelper(): Mime {
+        return $this->mimeHelper;
+    }
+    
+    /**
+     * @param Mime $mimeHelper
+     */
+    public function setMimeHelper( Mime $mimeHelper ): void {
+        $this->mimeHelper = $mimeHelper;
+    }
+    
 }

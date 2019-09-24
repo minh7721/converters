@@ -6,7 +6,7 @@ error_reporting(E_ALL);
 
 require __DIR__ . "/vendor/autoload.php";
 
-$input = 'https://www.dropbox.com/s/8sv9m782hch8nod/math2.doc?dl=1';
+$input = __DIR__ . "/files/test.docx";
 
 $tmp = __DIR__ . "/tmp";
 $tmpFolder = new \Colombo\Converters\Helpers\TemporaryDirectory($tmp);
@@ -16,20 +16,20 @@ $tmpFolder = new \Colombo\Converters\Helpers\TemporaryDirectory($tmp);
 
 $converter = new \Colombo\Converters\Helpers\Converter(null );
 
-$converter->setInput($input, 'url');
+$converter->setInput($input);
 
 // force custom converter
-$driver = new \Colombo\Converters\Drivers\OnlyOffice('http://118.70.13.36:5080');
+$driver = new \Colombo\Converters\Drivers\JodConverter('http://118.70.13.36:8999');
 //$gs->timeout(2);
 $converter->setForceConverter($driver);
 
-$outputFormat = 'docx';
+$outputFormat = 'pdf';
 $converter->setOutputFormat( $outputFormat);
 
 $result = $converter->run();
 
 if($result->isSuccess()){
-    dump($result->saveTo(__DIR__ . "/output_onlyoffice." . $outputFormat));
+    dump($result->saveTo(__DIR__ . "/output_jodconverter." . $outputFormat));
 }else{
     dump("Error", $result->getErrors());
 }

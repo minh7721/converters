@@ -22,7 +22,12 @@ class JodConverter implements ConverterInterface {
 		'verify' => false,
 	];
 	protected $client;
-	
+    
+    public function __construct( $host = '', $tmp = '' ) {
+        if($host){
+            $this->options('base_uri', $host);
+        }
+    }
 	
 	/**
 	 * @param $path
@@ -106,5 +111,4 @@ class JodConverter implements ConverterInterface {
 		}
 		return $client;
 	}
-	
 }
