@@ -77,7 +77,6 @@ class OnlyOffice implements ConverterInterface {
         
         if($response['endConvert'] && $response['percent']){
             $response['fileUrl'] = preg_replace( "/^(https?\:\/\/[^\/]+)/", $this->options('host'), $response['fileUrl']);
-            dd($response['fileUrl']);
             $result->setContent( file_get_contents( $response['fileUrl']) );
         }
         
