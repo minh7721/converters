@@ -58,23 +58,26 @@ abstract class CanRunCommand {
 		return $command . $append;
 	}
 	
-	protected function buildOptions(){
+	protected function buildOptions($use_equal_symbol = false){
+	    $pair_combinator = $use_equal_symbol ? "=" : " ";
 		$options = ' ';
 		foreach($this->process_options as $k => $v){
 			if(is_array( $v ) && count($v) > 0){
 				foreach ($v as $_v){
-					$options .= $k . " " . $_v . " ";
+					$options .= $k . $pair_combinator . $_v . " ";
 				}
 				continue;
 			}
-			if($v !== false){
-				$options .= $k . " ";
-			}else{
-				continue;
+			
+			if($v === false){
+			    continue;
 			}
+			
 			if($v !== true){
-				$options .= $v . " ";
-			}
+				$options .= $k . $pair_combinator . $v . " ";
+			}else{
+                $options .= $k . " ";
+            }
 		}
 		
 		return $options;
