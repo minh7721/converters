@@ -17,6 +17,8 @@ abstract class CanRunCommand {
 	private $command;
 	protected $bin;
 	protected $timeout = 300;
+	protected $output_when_error_length = 500;
+	protected $valid_error_codes = [0];
 	
 	/**
 	 * CanRunCommand constructor.
@@ -33,19 +35,35 @@ abstract class CanRunCommand {
         }
 	}
 	
+	public function addValidCode($code){
+	    if(!in_array( $code, $this->valid_error_codes, true)){
+	        $this->valid_error_codes[] = $code;
+        }
+    }
+    
+	public function removeValidCode($code){
+	    if($index = array_search( $code, $this->valid_error_codes)){
+	        unset($this->valid_error_codes[$index]);
+        }
+    }
+    
+	public function resetValidCode(){
+        $this->valid_error_codes = [0];
+    }
+	
 	
 	protected function validateRun()
 	{
 		$status = $this->process->getExitCode();
 		$error  = $this->process->getErrorOutput();
 		
-		if ($status !== 0 and $error !== '') {
+		if (!in_array( $status, $this->valid_error_codes, true) and $error !== '') {
 			throw new \RuntimeException(
 				sprintf(
 					"The exit status code %s says something went wrong:\n stderr: %s\n stdout: %s\ncommand: %s.",
 					$status,
 					$error,
-					$this->process->getOutput(),
+					mb_substr( $this->process->getOutput(), 0, $this->output_when_error_length),
 					$this->command
 				)
 			);
