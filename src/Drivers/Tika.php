@@ -23,6 +23,7 @@ class Tika implements ConverterInterface {
         'cli_path' => null,
         'cli_java' => null,
         'check' => true,
+        'timeout' => 15,
     ];
     
     /** @var WebClient */
@@ -40,6 +41,9 @@ class Tika implements ConverterInterface {
      * @return ConvertedResult
      */
     public function convert( $path, $outputFormat, $inputFormat = '' ): ConvertedResult {
+        
+        $this->prepareClient();
+        
         $result = new ConvertedResult();
         
         try{
@@ -74,11 +78,20 @@ class Tika implements ConverterInterface {
     }
     
     public function setMode($mode){
-        if($mode == 'web'){
-            $this->options['mode'] = 'web';
-            $this->client = new WebClient($this->options['web_host'], $this->options['web_port'], [], $this->options['check']);
-        }elseif ($mode == 'cli'){
-            $this->options['mode'] = 'cli';
+        $this->options('mode', $mode);
+    }
+    
+    protected function prepareClient(){
+        if($this->options('mode') == 'web'){
+            $this->client = new WebClient(
+                $this->options['web_host'],
+                $this->options['web_port'],
+                [
+                    CURLOPT_TIMEOUT => $this->options('timeout')
+                ],
+                $this->options['check']
+            );
+        }elseif ($this->options('mode') == 'cli'){
             $this->client = new CLIClient($this->options['cli_path'], $this->options['cli_java'], $this->options['check']);
         }
     }

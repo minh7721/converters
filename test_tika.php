@@ -6,7 +6,7 @@ error_reporting(E_ALL);
 
 require __DIR__ . "/vendor/autoload.php";
 
-$input = __DIR__ . "/files/cv.pdf";
+$input = __DIR__ . "/files/long.pdf";
 
 $tmp = __DIR__ . "/tmp";
 $tmpFolder = new \Colombo\Converters\Helpers\TemporaryDirectory($tmp);
@@ -22,6 +22,7 @@ $converter->setInput($input);
 $tika_host = null;
 $tika_port = null;
 $tika = new \Colombo\Converters\Drivers\Tika();
+
 //$gs->timeout(2);
 $converter->setForceConverter($tika);
 
