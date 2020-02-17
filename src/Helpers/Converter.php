@@ -177,6 +177,13 @@ class Converter {
 	}
 	
 	/**
+	 * Reset force_converter to false
+	 */
+	public function resetForceConverter(  ) {
+		$this->force_converter = false;
+	}
+	
+	/**
 	 * Change converter options
 	 */
 	public function options() {
