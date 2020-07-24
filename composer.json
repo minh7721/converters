@@ -20,7 +20,7 @@
         "illuminate/filesystem": "^5.0|^6.0",
         "guzzlehttp/guzzle": "^6.0",
         "nelexa/zip": "^3.1",
-        "vaites/php-apache-tika": "^0.7.1",
+        "hocvt/php-apache-tika": "dev-tmp",
         "symfony/finder": "^2.8|^3.0|^3.4|^4.2"
     },
     "require-dev": {
