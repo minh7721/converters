@@ -14,6 +14,7 @@ use Colombo\Converters\Exceptions\ConvertException;
 use Colombo\Converters\Helpers\Converter;
 use Colombo\Converters\Helpers\TemporaryDirectory;
 use Colombo\Converters\Process\CanRunCommand;
+use Illuminate\Support\Str;
 
 class OcrMyPdf extends CanRunCommand implements ConverterInterface {
 	
@@ -41,7 +42,7 @@ class OcrMyPdf extends CanRunCommand implements ConverterInterface {
 		}
 		$this->tmpFolder = new TemporaryDirectory( $location );
 		$this->tmpFolder->create();
-		$this->output = $this->tmpFolder->path(date( 'Ymd_His_') . str_random(3) . ".pdf");
+		$this->output = $this->tmpFolder->path(date( 'Ymd_His_') . Str::random(3) . ".pdf");
 	}
 	
 	public function options( $key = null, $value = null ) {

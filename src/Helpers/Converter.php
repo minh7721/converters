@@ -99,7 +99,7 @@ class Converter {
 	/**
 	 * @return string
 	 */
-	public function getInputFormat(): string {
+	public function getInputFormat(): ?string {
 		return $this->inputFormat;
 	}
 	
