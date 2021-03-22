@@ -56,8 +56,8 @@ class GS extends CanRunCommand implements ConverterInterface {
 		$output_file = $this->tmpFolder->tmpPath('pdf');
 		
 		$this->options('-o', $output_file);
-		
-		$command = $this->buildCommand($path);
+
+		$command = $this->buildCommand([$path]);
 		try{
 			$this->run( $command );
 			$result->setContent( file_get_contents( $output_file ));

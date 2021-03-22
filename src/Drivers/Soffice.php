@@ -34,13 +34,7 @@ class Soffice extends CanRunCommand implements ConverterInterface {
 	];
 	
 	protected $user_installation = '';
-	
-	protected function buildCommand($path = ''){
-		$command = $this->bin;
-		$command .= " " . $this->buildOptions();
-		return $command . " " . $this->user_installation . " " . $path;
-	}
-	
+
 	/**
 	 * @param $path
 	 * @param $outputFormat
@@ -61,7 +55,7 @@ class Soffice extends CanRunCommand implements ConverterInterface {
 		
 		$result = new ConvertedResult();
 		
-		$command = $this->buildCommand($path);
+		$command = $this->buildCommand([],[$path]);
 		try{
 			$this->run( $command, function ($type, $buffer) use (&$result, &$errors) {
 				if (Process::ERR === $type) {

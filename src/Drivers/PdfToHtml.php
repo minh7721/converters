@@ -47,7 +47,7 @@ class PdfToHtml extends CanRunCommand implements ConverterInterface {
 			throw new ConvertException($outputFormat . " was not supported by pdftohtml converter");
 		}
 		
-		$command = $this->buildCommand($path);
+		$command = $this->buildCommand([],[$path]);
 		try{
 			$this->run( $command);
 			$result->setContent( $this->output() );
@@ -56,13 +56,7 @@ class PdfToHtml extends CanRunCommand implements ConverterInterface {
 		}
 		return $result;
 	}
-	
-	protected function buildCommand($path = ''){
-		$command = $this->bin . " " . $path;
-		$command .= " " . $this->buildOptions();
-		return $command;
-	}
-	
+
 	public function startPage( int $page ) {
 		$this->options('-f', $page);
 	}
