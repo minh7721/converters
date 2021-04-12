@@ -62,7 +62,7 @@ abstract class CanRunCommand {
                     $status,
                     $error,
                     mb_substr( $this->process->getOutput(), 0, $this->output_when_error_length),
-                    $this->command
+                    implode(" ",$this->command)
                 )
             );
         }
