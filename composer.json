@@ -1,5 +1,5 @@
 {
-    "name": "minhhn/converters",
+    "name": "minh7721/converters",
     "description": "Suport convert document to other format",
     "type": "library",
     "authors": [
@@ -17,7 +17,7 @@
         "symfony/process": "^4.2|^5.0",
         "minh7721/mimey": "^v8.0.1",
         "illuminate/support": "^5.0|^6.0|^7.0|^8.0",
-        "illuminate/filesystem": "^5.0|^6.0|^7.0|^8.0",
+        "illuminate/filesystem": "^5.0|^6.0|^7.0|^8.0|^v9.0.0",
         "guzzlehttp/guzzle": "^6.0|^7.0",
         "nelexa/zip": "^4.0.2",
         "symfony/finder": "^2.8|^3.0|^3.4|^4.2|^5.0",
