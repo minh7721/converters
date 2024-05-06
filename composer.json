@@ -20,7 +20,7 @@
         "illuminate/filesystem": "^5.0|^6.0|^7.0|^8.0|^v9.0.0",
         "guzzlehttp/guzzle": "^6.0|^7.0",
         "nelexa/zip": "^4.0.2",
-        "symfony/finder": "^2.8|^3.0|^3.4|^4.2|^5.0",
+        "symfony/finder": "^2.8|^3.0|^3.4|^4.2|^5.0|^6.0",
         "symfony/mime": "^4.2|^5.0",
         "hocvt/php-apache-tika": "^0.9.2"
     },
