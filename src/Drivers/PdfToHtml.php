@@ -35,19 +35,25 @@ class PdfToHtml extends CanRunCommand implements ConverterInterface {
 	 */
 	public function convert( $path, $outputFormat, $inputFormat = '' ): ConvertedResult {
 		$result = new ConvertedResult();
-		
+        $command = [];
+
 		switch ($outputFormat){
 			case 'html':
 				
 				break;
 			case 'xml':
 				$this->options('-xml', true);
+                $command = [
+                    '-enc',
+                    'UTF-8',
+                ];
 				break;
 			default:
 			throw new ConvertException($outputFormat . " was not supported by pdftohtml converter");
 		}
-		
-		$command = $this->buildCommand([],[$path]);
+
+        $command = array_merge($this->buildCommand([], [$path]), $command);
+
 		try{
 			$this->run( $command);
 			$result->setContent( $this->output() );

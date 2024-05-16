@@ -30,7 +30,9 @@ class PdfToText extends CanRunCommand implements ConverterInterface {
 	 */
 	public function convert( $path, $outputFormat, $inputFormat = '' ): ConvertedResult {
 		$result = new ConvertedResult();
-		$command = $this->buildCommand(["-"],[$path]);
+        $this->options('-enc', 'UTF-8');
+        $command = array_merge($this->buildCommand([$path, '-'], ['-layout', '-nodiag']));
+
 		try{
 			$this->run( $command);
 			$result->setContent( $this->output() );
